@@ -35,4 +35,14 @@ public class PerfilTest {
 
         assertTrue(resultado);
     }
+
+    @Test
+    void adolescenteNaoDevePoderAssistirConteudoAdulto() {
+        Perfil usuario = Perfil.ADOLESCENTE;
+        Perfil exigido = Perfil.ADULTO;
+
+        boolean resultado = usuario.podeAssistir(exigido);
+
+        assertFalse(resultado);
+    }
 }
