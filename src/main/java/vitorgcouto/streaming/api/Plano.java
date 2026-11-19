@@ -12,4 +12,8 @@ public enum Plano {
     public int getLimiteUsuarios() {
         return limiteUsuarios;
     }
+
+    public boolean temAcesso(Plano exigido){
+        return this.compareTo(exigido) >= 0;
+    }
 }
