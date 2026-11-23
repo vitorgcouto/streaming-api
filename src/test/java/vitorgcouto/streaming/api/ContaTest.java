@@ -2,8 +2,7 @@ package vitorgcouto.streaming.api;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 public class ContaTest {
@@ -39,6 +38,40 @@ public class ContaTest {
 
 
         assertThrows(IllegalStateException.class, () -> conta.adicionarUsuario(quinto));
+    }
+    @Test
+    void assinanteNaoDeveContarNoLimiteDeNaoAssinantes() {
+        Conta conta = new Conta(Plano.BASICO);
+        conta.adicionarUsuario(new Usuario("Marcos", true));
+        conta.adicionarUsuario(new Usuario("Camila", false));
+        conta.adicionarUsuario(new Usuario("Maria", false));
+        Usuario excedente = new Usuario("Ana", false);
+
+
+        assertEquals(3, conta.getUsuarios().size());
+
+        assertThrows(IllegalStateException.class, () -> conta.adicionarUsuario(excedente));
+    }
+    @Test
+    void deveRemoverUsuarioDaConta() {
+        Conta conta = new Conta(Plano.BASICO);
+        Usuario ana = new Usuario("Ana", false);
+        conta.adicionarUsuario(new Usuario("Marcos", true));
+        conta.adicionarUsuario(ana);
+
+        conta.removerUsuario(ana);
+
+        assertEquals(1, conta.getUsuarios().size());
+    }
+    @Test
+    void naoDeveRemoverAssinanteDaConta() {
+        Conta conta = new Conta(Plano.BASICO);
+        Usuario ana = new Usuario("Ana", true);
+        conta.adicionarUsuario(new Usuario("Marcos", false));
+        conta.adicionarUsuario(ana);
+
+        assertThrows(IllegalStateException.class, () -> conta.removerUsuario(ana));
+        assertEquals(2, conta.getUsuarios().size());
     }
 }
 

@@ -24,4 +24,11 @@ public class Conta {
         }
         usuarios.add(u);
     }
+
+    public void removerUsuario(Usuario u) {
+        if (u.isAssinante()){
+            throw new IllegalStateException( "Assinante não pode ser removido");
+        }
+        usuarios.remove(u);
+    }
 }
