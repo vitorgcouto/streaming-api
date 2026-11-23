@@ -88,4 +88,16 @@ public class ContaTest {
         assertThrows(IllegalArgumentException.class,
                 () -> new Conta(Plano.BASICO, naoAssinante));
     }
+    @Test
+    void naoAssinanteNaoDeveAdicionarUsuario() {
+        Conta conta = new Conta(Plano.BASICO, marcos);
+        Usuario camila = new Usuario("Camila", false);
+        conta.adicionarUsuario(marcos, camila);
+
+        Usuario ana = new Usuario("Ana", false);
+
+        assertThrows(AcessoNegadoException.class, () -> conta.adicionarUsuario(camila, ana));
+
+        assertEquals( 2, conta.getUsuarios().size());
+    }
 }
