@@ -7,8 +7,10 @@ public class Conta {
     private final Plano plano;
     private final List<Usuario> usuarios = new ArrayList<>();
 
-    public Conta(Plano plano) {
+    public Conta(Plano plano, Usuario assinante) {
         this.plano = plano;
+        usuarios.add(assinante);
+
     }
     public List<Usuario> getUsuarios() {
         return usuarios;
