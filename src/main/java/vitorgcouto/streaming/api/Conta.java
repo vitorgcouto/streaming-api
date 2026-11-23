@@ -8,6 +8,9 @@ public class Conta {
     private final List<Usuario> usuarios = new ArrayList<>();
 
     public Conta(Plano plano, Usuario assinante) {
+        if (!assinante.isAssinante()){
+            throw new IllegalArgumentException( "A conta precisa ser criada por um usuário assinante");
+        }
         this.plano = plano;
         usuarios.add(assinante);
 
@@ -16,7 +19,7 @@ public class Conta {
         return usuarios;
     }
 
-    public void adicionarUsuario(Usuario u) {
+    public void adicionarUsuario(Usuario soliciante, Usuario u) {
         long qtdNaoAssinante = usuarios.stream()
                 .filter(usuario -> !usuario.isAssinante())
                 .count();
@@ -26,6 +29,7 @@ public class Conta {
         }
         usuarios.add(u);
     }
+
 
     public void removerUsuario(Usuario u) {
         if (u.isAssinante()){
