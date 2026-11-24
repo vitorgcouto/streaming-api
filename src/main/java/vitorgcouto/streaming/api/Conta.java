@@ -32,15 +32,16 @@ public class Conta {
     }
 
 
-    public void removerUsuario(Usuario u) {
-        if (u.isAssinante()){
+    public void removerUsuario(Usuario solicitante, Usuario alvo) {
+        verificarSolicitante(solicitante);
+        if (alvo.isAssinante()){
             throw new IllegalStateException( "Assinante não pode ser removido");
         }
-        usuarios.remove(u);
+        usuarios.remove(alvo);
     }
     private void verificarSolicitante(Usuario solicitante) {
         if (!solicitante.isAssinante() || !usuarios.contains(solicitante)) {
-            throw new AcessoNegadoException("Você não tem permissão!");
+            throw new AcessoNegadoException("Apenas o assinante da conta pode adicionar ou remover usuários");
         }
     }
 }

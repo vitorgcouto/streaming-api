@@ -66,7 +66,7 @@ public class ContaTest {
         Usuario ana = new Usuario("Ana", false);
         conta.adicionarUsuario(marcos, ana);
 
-        conta.removerUsuario(ana);
+        conta.removerUsuario(marcos, ana);
 
         assertEquals(1, conta.getUsuarios().size());
     }
@@ -77,7 +77,7 @@ public class ContaTest {
         conta.adicionarUsuario(marcos, new Usuario("Ana", false));
 
         assertThrows(IllegalStateException.class,
-                () -> conta.removerUsuario(marcos));
+                () -> conta.removerUsuario(marcos, marcos));
         assertEquals(2, conta.getUsuarios().size());
     }
 
@@ -99,5 +99,27 @@ public class ContaTest {
         assertThrows(AcessoNegadoException.class, () -> conta.adicionarUsuario(camila, ana));
 
         assertEquals( 2, conta.getUsuarios().size());
+    }
+    @Test
+    void naoAssinanteNaoDeveRemoverUsuario() {
+        Conta conta = new Conta(Plano.BASICO, marcos);
+        Usuario camila = new Usuario("Camila", false);
+        Usuario ana = new Usuario("Ana", false);
+        conta.adicionarUsuario(marcos, camila);
+        conta.adicionarUsuario(marcos, ana);
+
+
+        assertThrows(AcessoNegadoException.class, () -> conta.removerUsuario(camila, ana));
+
+        assertEquals(3, conta.getUsuarios().size());
+    }
+
+    @Test
+    void assinanteDeOutraContaNaoDeveAdicionarUsuario() {
+        Conta conta = new Conta(Plano.BASICO, marcos);
+        Usuario paulo = new Usuario("Paulo", true);   // assinante, mas NÃO está nesta conta
+        Usuario ana = new Usuario("Ana", false);
+
+        assertThrows(AcessoNegadoException.class, () -> conta.adicionarUsuario(paulo, ana));
     }
 }
