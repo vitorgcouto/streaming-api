@@ -3,6 +3,8 @@ package vitorgcouto.streaming.api;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ContaTest {
@@ -121,5 +123,71 @@ public class ContaTest {
         Usuario ana = new Usuario("Ana", false);
 
         assertThrows(AcessoNegadoException.class, () -> conta.adicionarUsuario(paulo, ana));
+    }
+    @Test
+    void adultoEmContaPremiumDeveAssistirFilmeAdultoPremium() {
+        Conta conta = new Conta(Plano.PREMIUM, marcos);
+        Usuario ana = new Usuario("Ana", false, Perfil.ADULTO);
+        conta.adicionarUsuario(marcos, ana);
+
+        Filme filme = new Filme("Filme de adulto", Perfil.ADULTO,Plano.PREMIUM);
+
+        conta.assistir(ana, filme);
+
+        assertEquals(1, conta.historicoDe(ana).size());
+    }
+    @Test
+    void infantilNaoDeveAssistirFilmeAdulto() {
+        Usuario caio = new Usuario("Caio", false, Perfil.INFANTIL);
+        Conta conta = new Conta(Plano.PREMIUM, marcos);
+        conta.adicionarUsuario(marcos, caio);
+
+        Filme filme = new Filme("Filme de adulto", Perfil.ADULTO,Plano.BASICO);
+
+        assertThrows(AcessoNegadoException.class, () -> conta.assistir(caio, filme));
+
+        assertEquals(0, conta.historicoDe(caio).size());
+    }
+    @Test
+    void contaBasicaNaoDeveAssistirFilmePremium() {
+        Usuario caio = new Usuario("Caio", false, Perfil.ADULTO);
+        Conta conta = new Conta(Plano.BASICO, marcos);
+        conta.adicionarUsuario(marcos, caio);
+
+        Filme filme = new Filme("Filme de adulto", Perfil.ADULTO,Plano.PREMIUM);
+
+        assertThrows(AcessoNegadoException.class, () -> conta.assistir(caio, filme));
+
+        assertEquals(0, conta.historicoDe(caio).size());
+    }
+    @Test
+    void historicoDeveManterOrdemERepeticoes() {
+        Conta conta = new Conta(Plano.PREMIUM, marcos);
+        Usuario ana = new Usuario("Ana", false, Perfil.ADULTO);
+        conta.adicionarUsuario(marcos, ana);
+
+        Filme a = new Filme("Filme A",  Perfil.ADULTO,Plano.PREMIUM);
+        Filme b = new Filme("Filme B",  Perfil.ADULTO,Plano.PREMIUM);
+
+        conta.assistir(ana, a);
+        conta.assistir(ana, b);
+        conta.assistir(ana, a);
+
+        assertEquals(List.of(a, b ,a), conta.historicoDe(ana));
+    }
+    @Test
+    void deveListarSomenteFilmesPermitidosParaPerfilEPlano(){
+        Conta conta = new Conta(Plano.BASICO, marcos);
+        Usuario caio = new Usuario("Caio", false, Perfil.INFANTIL);
+        conta.adicionarUsuario(marcos, caio);
+
+        Filme liberado = new Filme ("Desenho", Perfil.INFANTIL, Plano.BASICO);
+        Filme barradoPerfil = new Filme ("Filme adulto", Perfil.ADULTO, Plano.BASICO);
+        Filme barradoPlano = new Filme ("Desenho Premium", Perfil.INFANTIL, Plano.PREMIUM);
+        List<Filme> catalogo = List.of(liberado, barradoPerfil,barradoPlano);
+
+        List<Filme> resultado = conta.filmesDisponiveis(caio, catalogo);
+
+        assertEquals(List.of(liberado), resultado);
     }
 }
