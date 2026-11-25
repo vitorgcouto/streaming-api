@@ -4,7 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Conta {
-    private final Plano plano;
+    private Plano plano;
+
+    public Plano getPlano() {
+        return plano;
+    }
+
     private final List<Usuario> usuarios = new ArrayList<>();
 
     public Conta(Plano plano, Usuario assinante) {
@@ -21,9 +26,7 @@ public class Conta {
 
     public void adicionarUsuario(Usuario soliciante, Usuario u) {
         verificarSolicitante(soliciante);
-        long qtdNaoAssinante = usuarios.stream()
-                .filter(usuario -> !usuario.isAssinante())
-                .count();
+        long qtdNaoAssinante = contarNaoAssinantes();
 
         if (qtdNaoAssinante >= plano.getLimiteUsuarios()){
             throw new IllegalStateException("Limite do plano atingido");
@@ -71,6 +74,20 @@ public class Conta {
                 .filter(f -> u.getPerfil().podeAssistir(f.getPerfilMinimo())
                             && plano.temAcesso(f.getPlanoMinimo()))
                 .toList();
+    }
+    private long contarNaoAssinantes() {
+        return usuarios.stream()
+                .filter(usuario -> !usuario.isAssinante())
+                .count();
+    }
+    public void migrarPlano(Usuario solicitante, Plano novo) {
+        verificarSolicitante(solicitante);
+
+        if (contarNaoAssinantes()>novo.getLimiteUsuarios()) {
+            throw new IllegalStateException("O plano novo não comporta a quantidade atual de usuários");
+        }
+
+        this.plano = novo;
     }
 }
 

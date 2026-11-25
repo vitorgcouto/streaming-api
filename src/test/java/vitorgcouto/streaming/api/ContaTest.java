@@ -190,4 +190,53 @@ public class ContaTest {
 
         assertEquals(List.of(liberado), resultado);
     }
+    @Test
+    void assinanteDeveMigrarDeBasicoParaPremium() {
+        Conta conta = new Conta(Plano.BASICO, marcos);
+        Usuario ana = new Usuario("Ana", false, Perfil.ADULTO);
+        conta.adicionarUsuario(marcos, ana);
+        Filme premium = new Filme("Filme Premium", Perfil.ADULTO, Plano.PREMIUM);
+
+        conta.migrarPlano(marcos, Plano.PREMIUM);
+
+        assertEquals(Plano.PREMIUM, conta.getPlano());
+        conta.assistir(ana, premium);
+        assertEquals(1, conta.historicoDe(ana).size());
+    }
+
+    @Test
+    void downgradeNaoDeveSerPermitidoSeExcederLimiteDoPlanoNovo() {
+        Conta conta = new Conta(Plano.PREMIUM, marcos);
+        conta.adicionarUsuario(marcos, new Usuario("Ana", false));
+        conta.adicionarUsuario(marcos, new Usuario("Caio", false));
+        conta.adicionarUsuario(marcos, new Usuario("Maria", false));
+
+        assertThrows(IllegalStateException.class,
+                () -> conta.migrarPlano(marcos, Plano.BASICO));
+
+        assertEquals(Plano.PREMIUM, conta.getPlano());
+    }
+
+    @Test
+    void downgradeDeveSerPermitidoQuandoCabeNoLimiteDoPlanoNovo() {
+        Conta conta = new Conta(Plano.PREMIUM, marcos);
+        conta.adicionarUsuario(marcos, new Usuario("Ana", false));
+        conta.adicionarUsuario(marcos, new Usuario("Caio", false));
+
+        conta.migrarPlano(marcos, Plano.BASICO);
+
+        assertEquals(Plano.BASICO, conta.getPlano());
+    }
+
+    @Test
+    void naoAssinanteNaoDeveMigrarPlano() {
+        Conta conta = new Conta(Plano.BASICO, marcos);
+        Usuario camila = new Usuario("Camila", false);
+        conta.adicionarUsuario(marcos, camila);
+
+        assertThrows(AcessoNegadoException.class,
+                () -> conta.migrarPlano(camila, Plano.PREMIUM));
+
+        assertEquals(Plano.BASICO, conta.getPlano());
+    }
 }
