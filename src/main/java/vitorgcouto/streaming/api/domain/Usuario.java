@@ -35,4 +35,21 @@ public class Usuario {
     public Long getId() {
         return id;
     }
+    @Column(unique = true)
+    private String email;
+
+    private String senha;
+
+    public String getEmail() {
+        return email;
+    }
+
+    public String getSenha() {
+        return senha;
+    }
+
+    public void definirCredenciais(String email, String senha) {
+        this.email = email;
+        this.senha = senha;
+    }
 }
