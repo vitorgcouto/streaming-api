@@ -1,18 +1,27 @@
 package vitorgcouto.streaming.api.domain;
 
+import jakarta.persistence.*;
 import vitorgcouto.streaming.api.exception.AcessoNegadoException;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
 public class Conta {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Enumerated(EnumType.STRING)
     private Plano plano;
+
 
     public Plano getPlano() {
         return plano;
     }
-
-    private final List<Usuario> usuarios = new ArrayList<>();
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "conta_id")
+    private List<Usuario> usuarios = new ArrayList<>();
 
     public Conta(Plano plano, Usuario assinante) {
         if (!assinante.isAssinante()){
@@ -49,8 +58,10 @@ public class Conta {
             throw new AcessoNegadoException("Apenas o assinante da conta pode adicionar ou remover usuários");
         }
     }
-
-    private final List<HistoricoVisualizacao> historico = new ArrayList<>();
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "conta_id")
+    @OrderBy
+    private  List<HistoricoVisualizacao> historico = new ArrayList<>();
 
     public void assistir(Usuario u, Filme f) {
             if  (!usuarios.contains(u)) {
@@ -90,6 +101,9 @@ public class Conta {
         }
 
         this.plano = novo;
+    }
+    public Long getId() {
+        return id;
     }
 }
 

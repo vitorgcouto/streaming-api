@@ -31,4 +31,8 @@ public class Usuario {
     public String getNome() { return nome; }
     public boolean isAssinante() { return assinante; }
     public Perfil getPerfil() { return perfil; }
+
+    public Long getId() {
+        return id;
+    }
 }
