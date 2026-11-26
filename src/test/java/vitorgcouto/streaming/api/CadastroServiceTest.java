@@ -7,6 +7,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import vitorgcouto.streaming.api.domain.Plano;
 import vitorgcouto.streaming.api.domain.Usuario;
+import vitorgcouto.streaming.api.exception.CredenciaisInvalidasException;
+import vitorgcouto.streaming.api.exception.EmailJaCadastradoException;
 import vitorgcouto.streaming.api.repository.UsuarioRepository;
 import vitorgcouto.streaming.api.service.CadastroService;
 
@@ -30,5 +32,12 @@ class CadastroServiceTest {
         assertTrue(salvo.isAssinante());
         assertNotEquals("senha123", salvo.getSenha());
         assertTrue(encoder.matches("senha123", salvo.getSenha()));
+    }
+    @Test
+    void naoDeveCriarContaComEmailRepetido() {
+        service.criarConta("Marcos", "marcos@email.com", "senha123", Plano.BASICO);
+
+        assertThrows(EmailJaCadastradoException.class,
+                () -> service.criarConta("Outro", "marcos@email.com", "senha456", Plano.PREMIUM));
     }
 }
