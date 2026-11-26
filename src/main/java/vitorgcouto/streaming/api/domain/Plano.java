@@ -1,4 +1,4 @@
-package vitorgcouto.streaming.api;
+package vitorgcouto.streaming.api.domain;
 
 public enum Plano {
     BASICO(2), PREMIUM(4);

@@ -1,4 +1,6 @@
-package vitorgcouto.streaming.api;
+package vitorgcouto.streaming.api.domain;
+
+import vitorgcouto.streaming.api.exception.AcessoNegadoException;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,9 +1,21 @@
-package vitorgcouto.streaming.api;
+package vitorgcouto.streaming.api.domain;
 
+import jakarta.persistence.*;
+
+@Entity
 public class Usuario {
-    private final String nome;
-    private final boolean assinante;
-    private final Perfil perfil;
+    @Id @GeneratedValue(strategy= GenerationType.IDENTITY)
+    private Long id;
+
+    private  String nome;
+    private  boolean assinante;
+
+    @Enumerated(EnumType.STRING)
+    private Perfil perfil;
+
+    protected Usuario() {
+
+    }
 
 
     public Usuario(String nome, boolean assinante) {

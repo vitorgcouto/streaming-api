@@ -1,4 +1,4 @@
-package vitorgcouto.streaming.api;
+package vitorgcouto.streaming.api.exception;
 
 public class AcessoNegadoException extends RuntimeException {
     public AcessoNegadoException(String message) {

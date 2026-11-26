@@ -2,6 +2,8 @@ package vitorgcouto.streaming.api;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import vitorgcouto.streaming.api.domain.*;
+import vitorgcouto.streaming.api.exception.AcessoNegadoException;
 
 import java.util.List;
 

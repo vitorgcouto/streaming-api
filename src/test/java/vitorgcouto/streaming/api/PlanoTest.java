@@ -2,6 +2,7 @@ package vitorgcouto.streaming.api;
 
 
 import org.junit.jupiter.api.Test;
+import vitorgcouto.streaming.api.domain.Plano;
 
 import static org.junit.jupiter.api.Assertions.*;
 
