@@ -7,7 +7,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import vitorgcouto.streaming.api.domain.Plano;
 import vitorgcouto.streaming.api.domain.Usuario;
-import vitorgcouto.streaming.api.exception.CredenciaisInvalidasException;
 import vitorgcouto.streaming.api.exception.EmailJaCadastradoException;
 import vitorgcouto.streaming.api.repository.UsuarioRepository;
 import vitorgcouto.streaming.api.service.CadastroService;
