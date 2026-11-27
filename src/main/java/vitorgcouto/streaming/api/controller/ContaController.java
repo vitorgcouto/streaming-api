@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import vitorgcouto.streaming.api.domain.Conta;
 import vitorgcouto.streaming.api.dto.AdicionarUsuarioRequest;
 import vitorgcouto.streaming.api.dto.ContaResponse;
+import vitorgcouto.streaming.api.dto.MigrarPlanoRequest;
 import vitorgcouto.streaming.api.service.ContaService;
 import vitorgcouto.streaming.api.service.SessaoService;
 
@@ -39,6 +40,15 @@ public class ContaController {
         Long solicitanteId = sessaoService.idLogado(session);
         contaService.removerUsuario(solicitanteId, contaId, usuarioId);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{contaId}/plano")
+    public ContaResponse migrar(@PathVariable Long contaId,
+                                @Valid @RequestBody MigrarPlanoRequest request,
+                                HttpSession session) {
+        Long solicitanteId = sessaoService.idLogado(session);
+        Conta conta = contaService.migrarPlano(solicitanteId, contaId, request.plano());
+        return ContaResponse.de(conta);
     }
 }
 

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import vitorgcouto.streaming.api.domain.Conta;
 import vitorgcouto.streaming.api.domain.Perfil;
+import vitorgcouto.streaming.api.domain.Plano;
 import vitorgcouto.streaming.api.domain.Usuario;
 import vitorgcouto.streaming.api.exception.EmailJaCadastradoException;
 import vitorgcouto.streaming.api.exception.NaoAutenticadoException;
@@ -56,5 +57,15 @@ public class ContaService {
         }
 
         conta.removerUsuario(solicitante, alvo);
+    }
+    @Transactional
+    public Conta migrarPlano(Long solicitanteId, Long contaId, Plano novo) {
+        Conta conta = contaRepository.findById(contaId)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Conta não encontrada"));
+        Usuario solicitante = usuarioRepository.findById(solicitanteId)
+                .orElseThrow(() -> new NaoAutenticadoException());
+
+        conta.migrarPlano(solicitante, novo);    // permissão e limite do plano novo já estão no domínio
+        return conta;
     }
 }
