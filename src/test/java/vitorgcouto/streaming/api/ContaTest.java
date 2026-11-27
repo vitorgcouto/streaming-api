@@ -241,4 +241,16 @@ public class ContaTest {
 
         assertEquals(Plano.BASICO, conta.getPlano());
     }
+    @Test
+    void removerUsuarioDeveApagarSeuHistorico() {
+        Conta conta = new Conta(Plano.BASICO, marcos);
+        Usuario ana = new Usuario("Ana", false, Perfil.ADULTO);
+        conta.adicionarUsuario(marcos, ana);
+        Filme filme = new Filme("Filme", Perfil.ADULTO, Plano.BASICO);
+        conta.assistir(ana, filme);
+
+        conta.removerUsuario(marcos, ana);
+
+        assertEquals(0, conta.historicoDe(ana).size());
+    }
 }

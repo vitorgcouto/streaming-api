@@ -19,7 +19,7 @@ public class Conta {
     public Plano getPlano() {
         return plano;
     }
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "conta_id")
     private List<Usuario> usuarios = new ArrayList<>();
 
@@ -35,8 +35,8 @@ public class Conta {
         return usuarios;
     }
 
-    public void adicionarUsuario(Usuario soliciante, Usuario u) {
-        verificarSolicitante(soliciante);
+    public void adicionarUsuario(Usuario solicitante, Usuario u) {
+        verificarSolicitante(solicitante);
         long qtdNaoAssinante = contarNaoAssinantes();
 
         if (qtdNaoAssinante >= plano.getLimiteUsuarios()){
@@ -51,6 +51,7 @@ public class Conta {
         if (alvo.isAssinante()){
             throw new IllegalStateException( "Assinante não pode ser removido");
         }
+        historico.removeIf(h -> h.getUsuario().equals(alvo));
         usuarios.remove(alvo);
     }
     private void verificarSolicitante(Usuario solicitante) {
@@ -58,7 +59,7 @@ public class Conta {
             throw new AcessoNegadoException("Apenas o assinante da conta pode adicionar ou remover usuários");
         }
     }
-    @OneToMany(cascade = CascadeType.ALL)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "conta_id")
     @OrderBy
     private  List<HistoricoVisualizacao> historico = new ArrayList<>();
