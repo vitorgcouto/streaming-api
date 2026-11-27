@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 import vitorgcouto.streaming.api.domain.Conta;
 import vitorgcouto.streaming.api.domain.Filme;
 import vitorgcouto.streaming.api.domain.Usuario;
+import vitorgcouto.streaming.api.exception.AcessoNegadoException;
 import vitorgcouto.streaming.api.exception.NaoAutenticadoException;
 import vitorgcouto.streaming.api.exception.RecursoNaoEncontradoException;
 import vitorgcouto.streaming.api.repository.ContaRepository;
@@ -50,5 +51,22 @@ public class FilmeService {
     private Conta carregarConta(Usuario usuario) {
         return contaRepository.buscarPorUsuario(usuario)
                 .orElseThrow(() -> new RecursoNaoEncontradoException("Conta não encontrada"));
+    }
+    @Transactional(readOnly = true)
+    public List<Filme> historico(Long solicitanteId, Long alvoId) {
+        Usuario solicitante = carregarUsuario(solicitanteId);
+        Usuario alvo = usuarioRepository.findById(alvoId)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário não encontrado"));
+        Conta conta = carregarConta(alvo);
+
+        boolean ehOProprio = solicitante.getId().equals(alvo.getId());
+        boolean ehAssinanteDaConta = solicitante.isAssinante() && conta.getUsuarios().contains(solicitante);
+
+
+        if ( !ehOProprio && !ehAssinanteDaConta ) {
+            throw new AcessoNegadoException("Você não pode ver o histórico deste usuário");
+        }
+
+        return conta.historicoDe(alvo);
     }
 }
