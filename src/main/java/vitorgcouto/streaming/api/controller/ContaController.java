@@ -32,5 +32,13 @@ public class ContaController {
                 request.nome(), request.email(), request.senha(), request.perfil());
         return ResponseEntity.status(HttpStatus.CREATED).body(ContaResponse.de(conta));
     }
+    @DeleteMapping("/{contaId}/usuarios/{usuarioId}")
+    public ResponseEntity<Void> remover(@PathVariable Long contaId,
+                                        @PathVariable Long usuarioId,
+                                        HttpSession session) {
+        Long solicitanteId = sessaoService.idLogado(session);
+        contaService.removerUsuario(solicitanteId, contaId, usuarioId);
+        return ResponseEntity.noContent().build();
+    }
 }
 

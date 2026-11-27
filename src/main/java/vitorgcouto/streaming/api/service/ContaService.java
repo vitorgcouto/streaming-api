@@ -41,4 +41,20 @@ public class ContaService {
         conta.adicionarUsuario(solicitante, novo);
         return conta;
     }
+
+    @Transactional
+    public void removerUsuario(Long solicitanteId, Long contaId, Long alvoId) {
+        Conta conta = contaRepository.findById(contaId)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Conta não encontrada"));
+        Usuario solicitante = usuarioRepository.findById(solicitanteId)
+                .orElseThrow(() -> new NaoAutenticadoException());
+        Usuario alvo = usuarioRepository.findById(alvoId)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Usuário não encontrado"));
+
+        if (!conta.getUsuarios().contains(alvo)) {
+            throw new RecursoNaoEncontradoException("Usuário não pertence a esta conta");
+        }
+
+        conta.removerUsuario(solicitante, alvo);
+    }
 }
